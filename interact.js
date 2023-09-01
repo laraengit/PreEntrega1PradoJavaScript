@@ -19,8 +19,16 @@ function menuPrincipal (nombre){
         switch(eleccPrinc){
             case 1:
                 console.log(" caso 1. Pedir un turno")
-                pedirTurno(nombre)
-                elecc2 = menu(nombre,"Qué hacemos?","1.Volver al Menú principal \n2. Salir",2)
+                let noesp
+                noesp = pedirTurno(nombre)
+                if (noesp == 1){
+                    //si no estaba la especialidad, la redirigimos directamente al menu principal
+                    elecc2 = 1
+                }else{
+                    //si habia la especialidad le presguntamos tambien si quiere  salir
+                    elecc2 = menu(nombre,"Qué hacemos?","1.Volver al Menú principal \n2. Salir",2)
+                }
+                
                 break
             case 2:
                 console.log("caso 2.Calcular mi Índice de masa corporal(IMC)")
@@ -35,7 +43,6 @@ function menuPrincipal (nombre){
         
             default:
                 salir(nombre)
-                elecc2 = menu(nombre,"Qué hacemos?","1.Volver al Menú principal \n2. Salir",2)
                 break
         }
     } while(elecc2!=2 && eleccPrinc != 4 )
@@ -62,26 +69,13 @@ function imc(nombre){
     //Informo
     alert(`${nombre}, tu IMC es de ${imc}`)
     console.log(`El IMC es de ${imc}`)
-    //Analizo que quiere hace el usuario
-    /* let elecc
-    do {
-        elecc = menu(nombre,"Qué hacemos", "1. Ir a menú principal \n2.Salir")
-        console.log(`El usuario ingresó ${elecc}`)
-    }while(elecc!=1 || elecc!=2 || !Number(elecc)) */
-
-    /* if (elecc == 0){
-        salir(nombre)
-    } else{
-        menuPrincipal(nombre)
-    } */
-    /* return elecc */
+    
 }
 
 function presion(nombre){
-    //Obtengo peso y altura
+    //Obtengo valores de presion
     let sist
     let diast
-    let edad
     do{
         sist = parseFloat(prompt(`${nombre} ingresá la presión sistólica.`))
         console.log(`Sistólica: El usuario ingresó ${sist}`)
@@ -119,28 +113,38 @@ function pedirTurno(nombre){
     let prepaga
     let especialidad
     let disponibilidad
-    especialidad = menu(nombre,"Consulta turnos: Especialidad", "1. Ginecología\n2.Oftalmología\n 3.Cardiología\n 4.Clínica\n 5.Otra",5)
+    let noespec = 2
+    //Primero le pedimos la especialidad, para no hacerle perder tiempo si esta lo que busca
+    especialidad = menu(nombre,"Consulta turnos: Especialidad", "1. Ginecología\n2.Oftalmología\n3.Cardiología\n4.Clínica\n5.Otra",5)
     if (especialidad==5){
+        //Caso no atienden esa especialidad: le avisamos y lo redirigimos
         alert("Lo lamentamos, solo contamos con las especialidades listadas")
+        noespec = 1
     }
-    disponibilidad = menu(nombre, "Consulta turnos: Disponibilidad horaria \n Atendemos días de semana de 8 a 20 hs", "1. Mañana\n 2. Tarde \n 3. Mañana y tarde",3)
-    nuevo = menu(nombre,"Consulta turnos", "1. Soy un paciente nuevo en el consultorio\n 2.Ya me atendí en el consultorio",2)
-    if(nuevo == 1){
-        let apellido = prompt("Ingresá tu apellido")
-        let celular = prompt("Ingresá tu celular sin espacios")
-        prepaga = menu(nombre,"Consulta turnos: prepaga/Obra Social", "1. Swiss Medical\n2. OSDE\n3.Otra\n4. No tengo",4)
-        if (prepaga <= 2){
-            alert("La atención está cubierta por tu prepaga")
-        }else if (prepaga == 4){
-            alert("La atención no está cubierta por tu prepaga")
-        }else{
-            alert("Te agendaremos como privado.")
+    else{
+        //Si atienden le pedimos los datos
+        disponibilidad = menu(nombre, "Consulta turnos: Disponibilidad horaria \n Atendemos días de semana de 8 a 20 hs", "1. Mañana\n 2. Tarde \n 3. Mañana y tarde",3)
+        nuevo = menu(nombre,"Consulta turnos", "1. Soy un paciente nuevo en el consultorio\n 2.Ya me atendí en el consultorio",2)
+        if(nuevo == 1){
+            //si es nuevo hay que pedirle mas datos
+            let apellido = prompt("Ingresá tu apellido")
+            let celular = prompt("Ingresá tu celular sin espacios")
+            prepaga = menu(nombre,"Consulta turnos: prepaga/Obra Social", "1. Swiss Medical\n2. OSDE\n3.Otra\n4. No tengo",4)
+            if (prepaga <= 2){
+                alert("La atención está cubierta por tu prepaga")
+            }else if (prepaga == 4){
+                alert("La atención no está cubierta por tu prepaga")
+            }else{
+                alert("Te agendaremos como privado.")
+            }
         }
-        //alert("Gracias por la información, quedaste registrado")
-    }
-    let dni = prompt("Ingresá tu DNI sin puntos ni comas")
+        //si no es nuevo, ya con el dni del paciente deberian rastrear el resto de los datos de contacto
+        let dni = prompt("Ingresá tu DNI sin puntos ni comas")
 
-    alert("Listo! Quedó registrada tu consulta por el turno. Nos vamos a comunicar para enviarte los turnos disponibles.")
+        alert("Listo! Quedó registrada tu consulta por el turno. Nos vamos a comunicar para enviarte los turnos disponibles.")
+    }
+    
+    return noespec
 
 }
 
@@ -151,6 +155,4 @@ function salir(nombre){
 //Diálogo
 let nombre = prompt("Bienvenido al sitio web del consultorio! Ingresá tu nombre para comenzar: ")
 menuPrincipal(nombre)
-//let eleccPrinc = menu(nombre,"Menú principal", "1. Pedir un turno \n 2.Calcular mi Índice de masa corporal \n 3.Chequear mis valores de presión \n 0. Salir")
-//console.log(eleccPrinc)
 
